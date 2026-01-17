@@ -8,16 +8,21 @@
 <h1>Ingame Names</h1>
 <h1>🎂 Verjaardagskalender</h1>
 
-<table id="tabel" border="1" cellpadding="6">
-  <thead>
-    <tr>
-      <th>Naam</th>
-      <th>Datum</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+<div id="kalender">
+  <div class="header">
+    <button onclick="vorigeMaand()">‹</button>
+    <span id="maandJaar"></span>
+    <button onclick="volgendeMaand()">›</button>
+  </div>
+
+  <div class="weekdagen">
+    <div>Ma</div><div>Di</div><div>Wo</div><div>Do</div>
+    <div>Vr</div><div>Za</div><div>Zo</div>
+  </div>
+
+  <div id="dagen" class="dagen"></div>
+</div>
+
 
 <script src="verjaardagen.js"></script>
 <script>
