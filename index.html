@@ -34,9 +34,11 @@
 
 
 <script src="verjaardagen.js"></script>
+<script src="verjaardagen.js"></script>
 <script>
 let huidigeDatum = new Date();
 
+// Tekent de maandkalender
 function tekenKalender() {
   const dagenEl = document.getElementById("dagen");
   dagenEl.innerHTML = "";
@@ -51,26 +53,17 @@ function tekenKalender() {
   const start = (eersteDag + 6) % 7; // maandag = 0
   const dagenInMaand = new Date(jaar, maand + 1, 0).getDate();
 
-  // lege vakjes voor start van maand
-  for (let i = 0; i < start; i++) {
-    const leeg = document.createElement("div");
-    dagenEl.appendChild(leeg);
-  }
+  for (let i = 0; i < start; i++) dagenEl.appendChild(document.createElement("div"));
 
-  // dagvakjes
   for (let dag = 1; dag <= dagenInMaand; dag++) {
     const div = document.createElement("div");
     div.className = "dag";
     div.innerHTML = `<strong>${dag}</strong>`;
 
     const vandaag = new Date();
-    if (dag === vandaag.getDate() &&
-        maand === vandaag.getMonth() &&
-        jaar === vandaag.getFullYear()) {
+    if (dag === vandaag.getDate() && maand === vandaag.getMonth() && jaar === vandaag.getFullYear())
       div.classList.add("vandaag");
-    }
 
-    // verjaardagen toevoegen
     verjaardagen.forEach(v => {
       if (v.dag === dag && v.maand === maand + 1) {
         const span = document.createElement("div");
@@ -84,19 +77,28 @@ function tekenKalender() {
   }
 }
 
-function vorigeMaand() {
-  huidigeDatum.setMonth(huidigeDatum.getMonth() - 1);
-  tekenKalender();
-}
+// Toon komende verjaardagen (max 7)
+function toonKomendeVerjaardagen() {
+  const lijstEl = document.getElementById("komendeLijst");
+  lijstEl.innerHTML = "";
 
-function volgendeMaand() {
-  huidigeDatum.setMonth(huidigeDatum.getMonth() + 1);
-  tekenKalender();
-}
+  if (!verjaardagen || verjaardagen.length === 0) return;
 
-// init
-tekenKalender();
-</script>
+  const vandaag = new Date();
+  const ditJaar = vandaag.getFullYear();
+
+  const verjaardagenMetDatum = verjaardagen.map(v => {
+    let datum = new Date(ditJaar, v.maand - 1, v.dag);
+    if (datum < vandaag) datum.setFullYear(ditJaar + 1);
+    return { ...v, datum };
+  });
+
+  verjaardagenMetDatum.sort((a, b) => a.datum - b.datum);
+
+  verjaardagenMetDatum.slice(0, 7).forEach(v => {
+    const li = document.createElement("li");
+    const opties = { day: 'numeric', month: 'long' };
+
 
 </body>
 </html>
