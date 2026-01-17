@@ -1,47 +1,116 @@
+/* Algemene styling */
 body {
-  font-family: system-ui, sans-serif;
+  font-family: 'Segoe UI', sans-serif;
   background: #f4f6f8;
+  margin: 0;
   padding: 20px;
+  display: flex;
+  justify-content: center;
 }
 
 #kalender {
   background: white;
   max-width: 380px;
-  margin: 0 auto;
+  width: 100%;
   padding: 15px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
+/* Header met maand en pijltjes */
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 5px;
+  justify-content: space-between;
+  margin-bottom: 10px;
 }
 
+.header button {
+  border: none;
+  background: #e9ecef;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.header button:hover {
+  background: #dfe3e6;
+}
+
+#maandJaar {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* Weekdagen en dagvakjes */
 .weekdagen, .dagen {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  text-align: center;
 }
 
 .weekdagen div {
   font-weight: bold;
-  text-align: center;
+  color: #555;
+  padding-bottom: 4px;
 }
 
+/* Dagvakjes */
 .dag {
-  border: 1px solid #ddd;
-  min-height: 60px;
+  border: 1px solid #eee;
+  min-height: 70px;
   padding: 4px;
+  border-radius: 6px;
   font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  transition: transform 0.1s;
 }
 
+.dag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.dag strong {
+  display: block;
+  font-size: 13px;
+}
+
+/* Vandaag highlight */
 .vandaag {
-  background: #fff3cd;
+  background: #fff8e1;
+  border-color: #f1c40f;
 }
 
+/* Verjaardagen badges */
 .verjaardag {
+  margin-top: 4px;
+  background: #fdecea;
   color: #c0392b;
+  border-radius: 6px;
+  padding: 2px 4px;
   font-size: 11px;
+  width: 90%;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Mobiel responsive */
+@media(max-width: 400px) {
+  .dag {
+    min-height: 50px;
+    font-size: 11px;
+  }
+  .header button {
+    padding: 4px 8px;
+    font-size: 16px;
+  }
 }
