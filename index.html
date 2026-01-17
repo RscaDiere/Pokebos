@@ -2,11 +2,10 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
-  <title>Pokébos</title>
+  <title>Verjaardagskalender</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>Ingame Names</h1>
-<h1>🎂 Verjaardagskalender</h1>
 
 <div id="kalender">
   <div class="header">
@@ -16,33 +15,81 @@
   </div>
 
   <div class="weekdagen">
-    <div>Ma</div><div>Di</div><div>Wo</div><div>Do</div>
-    <div>Vr</div><div>Za</div><div>Zo</div>
+    <div>Ma</div>
+    <div>Di</div>
+    <div>Wo</div>
+    <div>Do</div>
+    <div>Vr</div>
+    <div>Za</div>
+    <div>Zo</div>
   </div>
 
   <div id="dagen" class="dagen"></div>
 </div>
 
-
 <script src="verjaardagen.js"></script>
 <script>
-const vandaag = new Date();
-const jaar = vandaag.getFullYear();
+let huidigeDatum = new Date();
 
-verjaardagen.forEach(v => {
-  const datum = new Date(jaar, v.maand - 1, v.dag);
-  const isVandaag =
-    datum.getDate() === vandaag.getDate() &&
-    datum.getMonth() === vandaag.getMonth();
+function tekenKalender() {
+  const dagenEl = document.getElementById("dagen");
+  dagenEl.innerHTML = "";
 
-  const rij = document.createElement("tr");
-  rij.innerHTML = `
-    <td>${v.naam}</td>
-    <td>${v.dag}/${v.maand}</td>
-    <td>${isVandaag ? "🎉 Vandaag!" : ""}</td>
-  `;
-  document.querySelector("#tabel tbody").appendChild(rij);
-});
+  const jaar = huidigeDatum.getFullYear();
+  const maand = huidigeDatum.getMonth();
+
+  document.getElementById("maandJaar").textContent =
+    huidigeDatum.toLocaleDateString("nl-NL", { month: "long", year: "numeric" });
+
+  const eersteDag = new Date(jaar, maand, 1).getDay();
+  const start = (eersteDag + 6) % 7; // maandag = 0
+  const dagenInMaand = new Date(jaar, maand + 1, 0).getDate();
+
+  // lege vakjes voor start van maand
+  for (let i = 0; i < start; i++) {
+    const leeg = document.createElement("div");
+    dagenEl.appendChild(leeg);
+  }
+
+  // dagvakjes
+  for (let dag = 1; dag <= dagenInMaand; dag++) {
+    const div = document.createElement("div");
+    div.className = "dag";
+    div.innerHTML = `<strong>${dag}</strong>`;
+
+    const vandaag = new Date();
+    if (dag === vandaag.getDate() &&
+        maand === vandaag.getMonth() &&
+        jaar === vandaag.getFullYear()) {
+      div.classList.add("vandaag");
+    }
+
+    // verjaardagen toevoegen
+    verjaardagen.forEach(v => {
+      if (v.dag === dag && v.maand === maand + 1) {
+        const span = document.createElement("div");
+        span.className = "verjaardag";
+        span.textContent = "🎂 " + v.naam;
+        div.appendChild(span);
+      }
+    });
+
+    dagenEl.appendChild(div);
+  }
+}
+
+function vorigeMaand() {
+  huidigeDatum.setMonth(huidigeDatum.getMonth() - 1);
+  tekenKalender();
+}
+
+function volgendeMaand() {
+  huidigeDatum.setMonth(huidigeDatum.getMonth() + 1);
+  tekenKalender();
+}
+
+// init
+tekenKalender();
 </script>
 
 </body>
