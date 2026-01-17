@@ -102,6 +102,16 @@ body {
   text-overflow: ellipsis;
 }
 
+/* Komende verjaardagen lijst */
+#komende h3 {
+  margin-bottom: 6px;
+  font-size: 15px;
+}
+#komende li {
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
 /* Mobiel responsive */
 @media(max-width: 400px) {
   .dag {
@@ -111,5 +121,8 @@ body {
   .header button {
     padding: 4px 8px;
     font-size: 16px;
+  }
+  #komende li {
+    font-size: 12px;
   }
 }
