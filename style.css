@@ -3,6 +3,7 @@ body {
   background: #f4f6f8;
   margin: 0;
   padding: 20px;
+  padding-top: 10px;
   display: flex;
   justify-content: center;
 }
