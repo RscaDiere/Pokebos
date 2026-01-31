@@ -1,81 +1,39 @@
-// Huidige maand en jaar
-let vandaag = new Date();
-let huidigeMaand = vandaag.getMonth(); // 0-11
-let huidigJaar = vandaag.getFullYear();
+// { naam: "Naam", dag: DD, maand: MM }
+// Voeg hier nieuwe verjaardagen toe
+const verjaardagen = [
+  { naam: "Gina", dag: 11, maand: 1 },
+  { naam: "Dieter", dag: 4, maand: 3 },
+  { naam: "Sigurd", dag: 18, maand: 9 },
+  { naam: "Jeroen", dag: 16, maand: 12 }
+];
 
-// Kalender-elementen
-const maandJaarEl = document.getElementById("maandJaar");
-const dagenEl = document.getElementById("dagen");
+function toonKomendeVerjaardagen() {
+  const lijstEl = document.getElementById("komendeLijst");
+  lijstEl.innerHTML = "";
 
-// Functie om de kalender te tonen
-function toonKalender(maand, jaar) {
-  dagenEl.innerHTML = "";
+  const vandaag = new Date();
+  const ditJaar = vandaag.getFullYear();
 
-  // Toon maand en jaar
-  const opties = { month: 'long', year: 'numeric' };
-  maandJaarEl.textContent = new Date(jaar, maand).toLocaleDateString('nl-NL', opties);
-
-  // Eerste dag van de maand
-  const eersteDag = new Date(jaar, maand, 1);
-  const laatsteDag = new Date(jaar, maand + 1, 0); // laatste dag van maand
-  const aantalDagen = laatsteDag.getDate();
-
-  // Bepaal op welke weekdag de maand start (Ma = 1 t/m Zo = 7)
-  let startWeekdag = eersteDag.getDay(); // 0 (zo) - 6 (za)
-  startWeekdag = startWeekdag === 0 ? 7 : startWeekdag; // Zondag = 7
-
-  // Voeg lege vakjes toe voor de eerste week
-  for (let i = 1; i < startWeekdag; i++) {
-    const leeg = document.createElement("div");
-    dagenEl.appendChild(leeg);
-  }
-
-  // Voeg dagen toe
-  for (let dag = 1; dag <= aantalDagen; dag++) {
-    const dagEl = document.createElement("div");
-    dagEl.classList.add("dag");
-    dagEl.innerHTML = `<strong>${dag}</strong>`;
-
-    // Check of het vandaag is
-    if (dag === vandaag.getDate() && maand === vandaag.getMonth() && jaar === vandaag.getFullYear()) {
-      dagEl.classList.add("vandaag");
+  // Voeg datum object toe en corrigeer naar volgend jaar als al geweest
+  const verjaardagenMetDatum = verjaardagen.map(v => {
+    let datum = new Date(ditJaar, v.maand - 1, v.dag);
+    if (datum < vandaag) {
+      datum.setFullYear(ditJaar + 1);
     }
+    return { ...v, datum };
+  });
 
-    // Check of er een verjaardag is
-    verjaardagen.forEach(v => {
-      if (v.dag === dag && v.maand - 1 === maand) {
-        const badge = document.createElement("div");
-        badge.classList.add("verjaardag");
-        badge.textContent = v.naam;
-        dagEl.appendChild(badge);
-      }
-    });
+  // Sorteer op datum
+  verjaardagenMetDatum.sort((a, b) => a.datum - b.datum);
 
-    dagenEl.appendChild(dagEl);
-  }
+  // Toon de eerstvolgende 7
+  verjaardagenMetDatum.slice(0,7).forEach(v => {
+    const li = document.createElement("li");
+    const opties = { day: 'numeric', month: 'long' };
+    li.textContent = `${v.naam} – ${v.datum.toLocaleDateString('nl-NL', opties)}`;
+    lijstEl.appendChild(li);
+  });
 }
 
-// Navigatiefuncties
-function vorigeMaand() {
-  huidigeMaand--;
-  if (huidigeMaand < 0) {
-    huidigeMaand = 11;
-    huidigJaar--;
-  }
-  toonKalender(huidigeMaand, huidigJaar);
-}
-
-function volgendeMaand() {
-  huidigeMaand++;
-  if (huidigeMaand > 11) {
-    huidigeMaand = 0;
-    huidigJaar++;
-  }
-  toonKalender(huidigeMaand, huidigJaar);
-}
-
-// Init
-toonKalender(huidigeMaand, huidigJaar);
-
-// Toon komende verjaardagen (functie uit verjaardagen.js)
+// roep deze functie aan bij init
 toonKomendeVerjaardagen();
