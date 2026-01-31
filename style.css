@@ -139,11 +139,6 @@ body {
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-#kalender, #komende {
-  max-width: 380px;
-  width: 100%;
-}
-
 #komende h3 {
   margin-top: 0;
   font-size: 15px;
