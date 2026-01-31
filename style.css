@@ -26,10 +26,14 @@ body {
 /* CONTENT WRAPPER */
 .content {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;       /* naast elkaar */
+  justify-content: center;   /* in het midden van de pagina */
+  align-items: flex-start;   /* bovenkant lijnen */
+  gap: 20px;                 /* ruimte tussen kalender en lijst */
   padding: 20px;
+  flex-wrap: wrap;           /* handig voor mobiel, dan schuift lijst eronder */
 }
+
 
 /* KALENDER */
 #kalender {
