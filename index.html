@@ -2,48 +2,131 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
-  <title>Pokebos Verjaardagskalender</title>
+  <title>Verjaardagskalender</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- BANNER -->
-<header class="banner">
-  <img src="logo.jpg" alt="Pokebos Logo">
-</header>
-
-<!-- CONTENT -->
-<main class="content">
-
-  <div id="kalender">
-    <div class="header">
-      <button onclick="vorigeMaand()">‹</button>
-      <span id="maandJaar"></span>
-      <button onclick="volgendeMaand()">›</button>
-    </div>
-
-    <div class="weekdagen">
-      <div>Ma</div>
-      <div>Di</div>
-      <div>Wo</div>
-      <div>Do</div>
-      <div>Vr</div>
-      <div>Za</div>
-      <div>Zo</div>
-    </div>
-
-    <div id="dagen" class="dagen"></div>
+<div id="kalender">
+  <div class="header">
+    <button onclick="vorigeMaand()">‹</button>
+    <span id="maandJaar"></span>
+    <button onclick="volgendeMaand()">›</button>
   </div>
 
-  <div id="komende">
-    <h3>📅 Komende verjaardagen</h3>
-    <ul id="komendeLijst"></ul>
+  <div class="weekdagen">
+    <div>Ma</div>
+    <div>Di</div>
+    <div>Wo</div>
+    <div>Do</div>
+    <div>Vr</div>
+    <div>Za</div>
+    <div>Zo</div>
   </div>
 
-</main>
+  <div id="dagen" class="dagen"></div>
+</div>
 
-<script src="verjaardagen.js" defer></script>
-<script src="script.js" defer></script>
+<!-- Komende verjaardagen lijst -->
+<div id="komende" style="max-width:380px; margin:20px auto; font-family:'Segoe UI', sans-serif;">
+  <h3>📅 Komende verjaardagen</h3>
+  <ul id="komendeLijst" style="padding-left: 20px;"></ul>
+</div>
+
+<script src="verjaardagen.js"></script>
+<script>
+let huidigeDatum = new Date();
+
+// Tekent de maandkalender
+function tekenKalender() {
+  const dagenEl = document.getElementById("dagen");
+  dagenEl.innerHTML = "";
+
+  const jaar = huidigeDatum.getFullYear();
+  const maand = huidigeDatum.getMonth();
+
+  document.getElementById("maandJaar").textContent =
+    huidigeDatum.toLocaleDateString("nl-NL", { month: "long", year: "numeric" });
+
+  const eersteDag = new Date(jaar, maand, 1).getDay();
+  const start = (eersteDag + 6) % 7; // maandag = 0
+  const dagenInMaand = new Date(jaar, maand + 1, 0).getDate();
+
+  // lege vakjes voor start van maand
+  for (let i = 0; i < start; i++) dagenEl.appendChild(document.createElement("div"));
+
+  // dagvakjes
+  for (let dag = 1; dag <= dagenInMaand; dag++) {
+    const div = document.createElement("div");
+    div.className = "dag";
+    div.innerHTML = `<strong>${dag}</strong>`;
+
+    const vandaag = new Date();
+    if (dag === vandaag.getDate() &&
+        maand === vandaag.getMonth() &&
+        jaar === vandaag.getFullYear()) {
+      div.classList.add("vandaag");
+    }
+
+    // verjaardagen toevoegen
+    verjaardagen.forEach(v => {
+      if (v.dag === dag && v.maand === maand + 1) {
+        const span = document.createElement("div");
+        span.className = "verjaardag";
+        span.textContent = "🎂 " + v.naam;
+        div.appendChild(span);
+      }
+    });
+
+    dagenEl.appendChild(div);
+  }
+}
+
+// Toon komende verjaardagen (max 7)
+function toonKomendeVerjaardagen() {
+  const lijstEl = document.getElementById("komendeLijst");
+  lijstEl.innerHTML = "";
+
+  if (!verjaardagen || verjaardagen.length === 0) return;
+
+  const vandaag = new Date();
+  const ditJaar = vandaag.getFullYear();
+
+  const verjaardagenMetDatum = verjaardagen.map(v => {
+    let datum = new Date(ditJaar, v.maand - 1, v.dag);
+    if (datum < vandaag) datum.setFullYear(ditJaar + 1);
+    return { ...v, datum };
+  });
+
+  verjaardagenMetDatum.sort((a, b) => a.datum - b.datum);
+
+  verjaardagenMetDatum.slice(0, 7).forEach(v => {
+    const li = document.createElement("li");
+    const opties = { day: 'numeric', month: 'long' };
+    const isVandaag = v.datum.toDateString() === vandaag.toDateString();
+    li.textContent = `${v.naam} – ${v.datum.toLocaleDateString('nl-NL', opties)}`;
+    if (isVandaag) li.textContent += " 🎉";
+    lijstEl.appendChild(li);
+  });
+}
+
+// Navigatie knoppen
+function vorigeMaand() {
+  huidigeDatum.setMonth(huidigeDatum.getMonth() - 1);
+  tekenKalender();
+}
+
+function volgendeMaand() {
+  huidigeDatum.setMonth(huidigeDatum.getMonth() + 1);
+  tekenKalender();
+}
+
+// Initialiseer alles **nadat DOM en scripts geladen zijn**
+window.addEventListener('DOMContentLoaded', () => {
+  tekenKalender();
+  toonKomendeVerjaardagen();
+});
+</script>
 
 </body>
 </html>
